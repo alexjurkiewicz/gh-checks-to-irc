@@ -1,0 +1,25 @@
+service: gh-checks-to-irc
+
+provider:
+  name: aws
+  runtime: python3.8
+
+package:
+  exclude:
+    - "**"
+  include:
+    - handler.py
+
+functions:
+  handler:
+    handler: handler.handler
+    memorySize: 128
+    events:
+      - http:
+          path: /
+          method: post
+    environment:
+      github_secret: ${file(serverless-variables.yml):github_secret}
+      channel: ${file(serverless-variables.yml):channel}
+      nick: ${file(serverless-variables.yml):nick}
+      password: ${file(serverless-variables.yml):password}
